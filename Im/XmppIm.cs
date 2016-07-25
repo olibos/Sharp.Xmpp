@@ -18,21 +18,21 @@ namespace Sharp.Xmpp.Im
     /// <remarks>For implementation details, refer to RFC 3921.</remarks>
     public class XmppIm : IDisposable
     {
-        private bool retrieveRoster = true;
+        private bool userRoster = true;
 
         /// <summary>
         /// If false the connection will not automatically retrieve the rooster
         /// </summary>
-        public bool RetrieveRoster
+        public bool UseRoster
         {
             get
             {
-                return retrieveRoster;
+                return userRoster;
             }
 
             set
             {
-                retrieveRoster = value;
+                userRoster = value;
             }
         }
 
@@ -269,11 +269,6 @@ namespace Sharp.Xmpp.Im
         public event EventHandler<MessageEventArgs> Message;
 
         /// <summary>
-        /// The event that is raised when a chat message is received.
-        /// </summary>
-        public event EventHandler<MessageEventArgs> BodylessMessage;
-
-        /// <summary>
         /// The event that is raised when a subscription request made by the JID
         /// associated with this instance has been approved.
         /// </summary>
@@ -395,7 +390,7 @@ namespace Sharp.Xmpp.Im
                 EstablishSession();
 
                 //If roster is disabled don't send it nor the presence
-                if (retrieveRoster)
+                if (userRoster)
                 {
                     // Retrieve user's roster as recommended (Refer to RFC 3921, Section 7.3).
                     Roster roster = GetRoster();
@@ -1696,12 +1691,17 @@ namespace Sharp.Xmpp.Im
                 }
             }
 
-            // Only raise the Message event, if the message stanza actually contains
-            // a body.
+            MessageEventArgs args;
             if (message.Data["body"] != null)
-                Message.Raise(this, new MessageEventArgs(message.From, message));
+            {
+                args = new MessageEventArgs(message.From, message);
+            }
             else
-                BodylessMessage.Raise(this, new MessageEventArgs(message));
+            {
+                args = new MessageEventArgs(message);
+            }
+
+            this.Message.Raise(this, args);
         }
 
         /// <summary>

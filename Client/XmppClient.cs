@@ -24,8 +24,8 @@ namespace Sharp.Xmpp.Client
         /// </summary>
         public bool UseRooster
         {
-            get { return im.RetrieveRoster; }
-            set { im.RetrieveRoster = value; }
+            get { return im.UseRoster; }
+            set { im.UseRoster = value; }
         }
 
         /// <summary>
@@ -461,21 +461,6 @@ namespace Sharp.Xmpp.Client
             remove
             {
                 im.Message -= value;
-            }
-        }
-
-        /// <summary>
-        /// The event that is raised when a bodyless message is received.
-        /// </summary>
-        public event EventHandler<MessageEventArgs> BodylessMessage
-        {
-            add
-            {
-                im.BodylessMessage += value;
-            }
-            remove
-            {
-                im.BodylessMessage -= value;
             }
         }
 
